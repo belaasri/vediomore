@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        <p class="subtitle">download online videos, download online video to mp3 for free</p>
+        
+        <form id="downloadForm">
+            <div class="search-container">
+                <input type="text" id="videoUrl" placeholder="Search keywords or paste video link here" required>
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+        </form>
+
+        <div id="result" class="hidden">
+            <h2 id="videoTitle"></h2>
+            <img id="videoThumbnail" alt="Video Thumbnail">
+            <p><strong>Views:</strong> <span id="viewCount"></span></p>
+            <p><strong>Likes:</strong> <span id="likeCount"></span></p>
+            <p><strong>Description:</strong> <span id="videoDescription"></span></p>
+            <div class="download-options">
+                <a id="downloadMp4" class="download-btn" href="/sample.mp4" download>Download MP4</a>
+                <a id="downloadMp3" class="download-btn" href="/sample.mp3" download>Download MP3</a>
+            </div>
+        </div>
+
+        <div id="error" class="hidden"></div>
+
+        <p class="info-text">
+            YouTube is the biggest YouTube video sharing platform in the world, and provide an excellent experience for users to upload, view, and share videos. What it can't provide is a YouTube video download. That is why yt1d is here to help you out!
+        </p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
