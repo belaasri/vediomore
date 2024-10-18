@@ -57,11 +57,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('likeCount').textContent = videoInfo.statistics.likeCount;
     document.getElementById('videoDescription').textContent = videoInfo.snippet.description;
 
-    downloadMp4Btn.href = `/download?videoId=${videoId}&format=mp4`;
-    downloadMp3Btn.href = `/download?videoId=${videoId}&format=mp3`;
+    downloadMp4Btn.onclick = (e) => initiateDownload(e, videoId, 'mp4');
+    downloadMp3Btn.onclick = (e) => initiateDownload(e, videoId, 'mp3');
 
     resultDiv.classList.remove('hidden');
     errorDiv.classList.add('hidden');
+  }
+
+  function initiateDownload(e, videoId, format) {
+    e.preventDefault();
+    window.location.href = `/download?videoId=${videoId}&format=${format}`;
   }
 
   function showError(message) {
