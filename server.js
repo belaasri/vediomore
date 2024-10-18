@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -29,9 +29,14 @@ app.get('/download', async (req, res) => {
           res.download(outputPath, `${videoTitle}.mp4`, (err) => {
             if (err) {
               console.error('Error sending file:', err);
+              res.status(500).send('Error downloading file');
             }
             fs.unlinkSync(outputPath);
           });
+        })
+        .on('error', (err) => {
+          console.error('Error downloading video:', err);
+          res.status(500).send('Error downloading video');
         });
     } else if (format === 'mp3') {
       ytdl(videoId, { quality: 'highestaudio' })
@@ -41,9 +46,14 @@ app.get('/download', async (req, res) => {
             res.download(outputPath, `${videoTitle}.mp3`, (err) => {
               if (err) {
                 console.error('Error sending file:', err);
+                res.status(500).send('Error downloading file');
               }
               fs.unlinkSync(outputPath);
             });
+          })
+          .on('error', (err) => {
+            console.error('Error converting video:', err);
+            res.status(500).send('Error converting video');
           })
         )
         .save(outputPath);
