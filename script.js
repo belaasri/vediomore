@@ -30,48 +30,58 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function fetchVideoInfo(videoId) {
-    const response = await fetch(`https://youtube-v31.p.rapidapi.com/videos?part=contentDetails%2Csnippet%2Cstatistics&id=${videoId}`, {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-host': 'youtube-v31.p.rapidapi.com',
-        'x-rapidapi-key': 'd1c53133acmsh2e7c470c0bfbb2ep1a074cjsne9dd522da151'
-      }
-    });
+    const response = await fetch(`/api/video-info?videoId=${videoId}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch video information');
     }
 
     const data = await response.json();
-    if (data.items && data.items.length > 0) {
-      return data.items[0];
+    if (data) {
+      return data;
     } else {
       throw new Error('No video information found');
     }
   }
 
   function displayVideoInfo(videoInfo, videoId) {
-    document.getElementById('videoTitle').textContent = videoInfo.snippet.title;
-    document.getElementById('videoThumbnail').src = videoInfo.snippet.thumbnails.high.url;
-    document.getElementById('viewCount').textContent = videoInfo.statistics.viewCount;
-    document.getElementById('likeCount').textContent = videoInfo.statistics.likeCount;
-    document.getElementById('videoDescription').textContent = videoInfo.snippet.description;
+    document.getElementById('videoTitle').textContent = videoInfo.title;
+    document.getElementById('videoThumbnail').src = videoInfo.thumbnailUrl;
+    document.getElementById('viewCount').textContent = videoInfo.viewCount;
+    document.getElementById('likeCount').textContent = videoInfo.likeCount;
+    document.getElementById('videoDescription').textContent = videoInfo.description;
 
-    downloadMp4Btn.onclick = (e) => initiateDownload(e, videoId, 'mp4');
-    downloadMp3Btn.onclick = (e) => initiateDownload(e, videoId, 'mp3');
+    downloadMp4Btn.onclick = () => initiateDownload(videoId, 'mp4');
+    downloadMp3Btn.onclick = () => initiateDownload(videoId, 'mp3');
 
     resultDiv.classList.remove('hidden');
     errorDiv.classList.add('hidden');
-  }
-
-  function initiateDownload(e, videoId, format) {
-    e.preventDefault();
-    window.location.href = `/download?videoId=${videoId}&format=${format}`;
   }
 
   function showError(message) {
     errorDiv.textContent = message;
     errorDiv.classList.remove('hidden');
     resultDiv.classList.add('hidden');
+  }
+
+  async function initiateDownload(videoId, format) {
+    try {
+      const response = await fetch(`/api/download?videoId=${videoId}&format=${format}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `video.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        showError('Error downloading video');
+      }
+    } catch (error) {
+      showError('Error downloading video');
+    }
   }
 });
